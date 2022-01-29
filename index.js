@@ -19,7 +19,7 @@ const App={
                 document.cookie = `hextoken=${token}; expires=${new Date(expired)};`;
                 console.log(expired);
                 // this.checkLogin();
-                window.location = 'product.html';
+                window.location = 'background.html';
             }).catch((error)=>{console.dir(error);})},
 
         // checkLogin(params){

@@ -5,11 +5,16 @@ const path='williamone';
 const app=Vue.createApp({
     data(){
         return {
-            text:"lol"
+            isPop:true,
         }
-    }
+    },
 
-
+    method:{
+        popSwitcher(){
+            this.isPop=!this.isPop;
+            console.log(this.isPop);
+        }
+    },
 })
 
 app.mount('#app');
