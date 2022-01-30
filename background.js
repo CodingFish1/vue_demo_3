@@ -10,9 +10,8 @@ const app=Vue.createApp({
     },
 
     method:{
-        popSwitcher(){
-            this.isPop=!this.isPop;
-            console.log(this.isPop);
+        showDetail(){
+            console.log('Hi')
         }
     },
 })
