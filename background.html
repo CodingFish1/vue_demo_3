@@ -16,7 +16,7 @@
     <div id="app">
       <div class="container">
         <div class="text-end mt-4">
-          <button class="btn btn-primary" data-bs-target="#productModal" data-bs-toggle="modal" @click="showDetail">
+          <button class="btn btn-primary" @click="modalSwitcher">
             建立新的產品
           </button>
         </div>
@@ -42,14 +42,14 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td></td>
-              <td></td>
+            <tr  v-for="item in products" :key="item.id">
+              <td>{{item.category}}</td>
+              <td>{{item.title}}</td>
               <td class="text-end"></td>
-              <td class="text-end"></td>
+              <td class="text-end">{{item.price}}</td>
               <td>
-                <span class="text-success">啟用</span>
-                <span>未啟用</span>
+                <span class="text-success" v-if="item.is_enabled">啟用</span>
+                <span v-else>未啟用</span>
               </td>
               <td>
                 <div class="btn-group">
@@ -79,21 +79,25 @@
             <div class="modal-body">
               <div class="row">
                 <div class="col-sm-4">
-                  <div class="mb-2">
-                    <div class="mb-3">
-                      <label for="imageUrl" class="form-label">輸入圖片網址</label>
-                      <input type="text" class="form-control"
-                             placeholder="請輸入圖片連結">
-                    </div>
-                    <img class="img-fluid" src="" alt="">
+                  <div class="mb-3">
+                    <label for="imageUrl" class="form-label">主要圖片</label>
+                    <input type="text" class="form-control mb-2" placeholder="請輸入圖片連結" v-model="tempProduct.imageUrl">
+                    <img class="img-fluid" v-bind:src="tempProduct.imageUrl">
                   </div>
-                  <div>
-                    <button class="btn btn-outline-primary btn-sm d-block w-100">
+                  <h3 class="mb-3">多圖新增</h3>
+                  <div class="mb-2" v-for="(item,key) in tempProduct.imagesUrl" :key="key">
+                    <div class="mb-3">
+                      <input type="text" class="form-control mb-2" placeholder="請輸入圖片連結" v-model="tempProduct.imagesUrl[key]">
+                      <img class="img-fluid" v-bind:src="tempProduct.imagesUrl[key]" alt="" @load="imgOK">
+                    </div>
+                  </div>
+                  <div v-if="tempProduct.imagesUrl.length===0 ||tempProduct.imagesUrl[tempProduct.imagesUrl.length-1]">
+                    <button class="btn btn-outline-primary btn-sm d-block w-100" @click="addImg">
                       新增圖片
                     </button>
                   </div>
-                  <div>
-                    <button class="btn btn-outline-danger btn-sm d-block w-100">
+                  <div v-else>
+                    <button class="btn btn-outline-danger btn-sm d-block w-100" @click="rmImg">
                       刪除圖片
                     </button>
                   </div>
@@ -101,50 +105,51 @@
                 <div class="col-sm-8">
                   <div class="mb-3">
                     <label for="title" class="form-label">標題</label>
-                    <input id="title" type="text" class="form-control" placeholder="請輸入標題">
+                    <input id="title" v-model="tempProduct.title" type="text" class="form-control" placeholder="請輸入標題">
                   </div>
 
                   <div class="row">
                     <div class="mb-3 col-md-6">
                       <label for="category" class="form-label">分類</label>
-                      <input id="category" type="text" class="form-control"
-                             placeholder="請輸入分類">
+                      <input id="category" v-model="tempProduct.category" type="text" class="form-control"
+                        placeholder="請輸入分類">
                     </div>
                     <div class="mb-3 col-md-6">
                       <label for="price" class="form-label">單位</label>
-                      <input id="unit" type="text" class="form-control" placeholder="請輸入單位">
+                      <input id="unit" v-model="tempProduct.unit" type="text" class="form-control" placeholder="請輸入單位">
                     </div>
                   </div>
 
                   <div class="row">
                     <div class="mb-3 col-md-6">
                       <label for="origin_price" class="form-label">原價</label>
-                      <input id="origin_price" type="number" min="0" class="form-control" placeholder="請輸入原價">
+                      <input id="origin_price" v-model.number="tempProduct.origin_price" type="number" min="0"
+                        class="form-control" placeholder="請輸入原價">
                     </div>
                     <div class="mb-3 col-md-6">
                       <label for="price" class="form-label">售價</label>
-                      <input id="price" type="number" min="0" class="form-control"
-                             placeholder="請輸入售價">
+                      <input id="price" v-model.number="tempProduct.price" type="number" min="0" class="form-control"
+                        placeholder="請輸入售價">
                     </div>
                   </div>
                   <hr>
 
                   <div class="mb-3">
                     <label for="description" class="form-label">產品描述</label>
-                    <textarea id="description" class="form-control"
-                              placeholder="請輸入產品描述">
-                    </textarea>
+                    <textarea id="description" v-model="tempProduct.description" class="form-control"
+                      placeholder="請輸入產品描述">
+                  </textarea>
                   </div>
                   <div class="mb-3">
                     <label for="content" class="form-label">說明內容</label>
-                    <textarea id="description" class="form-control"
-                              placeholder="請輸入說明內容">
-                    </textarea>
+                    <textarea id="description" v-model="tempProduct.content" class="form-control"
+                      placeholder="請輸入說明內容">
+                  </textarea>
                   </div>
                   <div class="mb-3">
                     <div class="form-check">
-                      <input id="is_enabled" class="form-check-input" type="checkbox"
-                             :true-value="1" :false-value="0">
+                      <input id="is_enabled" v-model="tempProduct.is_enabled" class="form-check-input" type="checkbox"
+                        :true-value="1" :false-value="0">
                       <label class="form-check-label" for="is_enabled">是否啟用</label>
                     </div>
                   </div>
@@ -190,6 +195,7 @@
       <!-- Modal -->
     </div>
     <script src="./background.js" type="module"></script>
+    <!-- <script src="./product.js" type="module"></script> -->
     <script src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.9.1/axios.min.js'
             integrity='sha512-Xk3wWei2TGrsh9kDSBKUMIjw/86sLUvhtnv9f7fOuIwhhiUTKz8szkWkzHthrM5Bb3Bu9idSzkxOrkzhcneuiw=='
             crossorigin='anonymous'></script>
@@ -203,3 +209,4 @@
   </body>
 
 </html>
+
