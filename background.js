@@ -23,12 +23,15 @@ const app=Vue.createApp({
     methods:{
         modalSwitcher(status,item){
             if(status==="new"){
+                console.log(status);
                 this.tempProduct={imagesUrl:[]};
                 this.axiosStatus='new'
-        }else if(status==="edit"){
-                this.tempProduct=JSON.parse(JSON.stringify(item))};
                 productModal.show();
-                this.axiosStatus='edit'},
+                console.log(this.axiosStatus);
+        }else if(status==="edit"){
+                console.log(status);
+                this.tempProduct=JSON.parse(JSON.stringify(item))
+                this.axiosStatus='edit'}},
 
         addImg(){
             this.tempProduct.imagesUrl.push('');},
@@ -37,13 +40,16 @@ const app=Vue.createApp({
             this.tempProduct.imagesUrl.pop();},
 
         cudRouter(){
+            console.log(this.axiosStatus);
             if(this.axiosStatus==='new'){
+                console.log(this.axiosStatus);
                 axios.post(`${apiUrl}/api/${path}/admin/product`,{data:this.tempProduct})
                     .then((res)=>{console.log(res);
                     this.getProduct();
                     productModal.hide()})
                     .catch((error)=>{console.dir(error);})
             }else if(this.axiosStatus==='edit'){
+                console.log(this.axiosStatus);
                 axios.put(`${apiUrl}/api/${path}/admin/product/${this.tempProduct.id}`,{data:this.tempProduct})
                     .then((res)=>{console.log(res);
                     this.getProduct();
