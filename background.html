@@ -16,7 +16,7 @@
     <div id="app">
       <div class="container">
         <div class="text-end mt-4">
-          <button class="btn btn-primary" @click="modalSwitcher">
+          <button class="btn btn-primary" @click="modalSwitcher('new')">
             建立新的產品
           </button>
         </div>
@@ -53,10 +53,10 @@
               </td>
               <td>
                 <div class="btn-group">
-                  <button type="button" class="btn btn-outline-primary btn-sm">
+                  <button type="button" class="btn btn-outline-primary btn-sm" @click="modalSwitcher('edit',item)">
                     編輯
                   </button>
-                  <button type="button" class="btn btn-outline-danger btn-sm">
+                  <button type="button" class="btn btn-outline-danger btn-sm" @click="isDelete(item)">
                     刪除
                   </button>
                 </div>
@@ -88,7 +88,7 @@
                   <div class="mb-2" v-for="(item,key) in tempProduct.imagesUrl" :key="key">
                     <div class="mb-3">
                       <input type="text" class="form-control mb-2" placeholder="請輸入圖片連結" v-model="tempProduct.imagesUrl[key]">
-                      <img class="img-fluid" v-bind:src="tempProduct.imagesUrl[key]" alt="" @load="imgOK">
+                      <img class="img-fluid" v-bind:src="tempProduct.imagesUrl[key]" alt="">
                     </div>
                   </div>
                   <div v-if="tempProduct.imagesUrl.length===0 ||tempProduct.imagesUrl[tempProduct.imagesUrl.length-1]">
@@ -160,7 +160,7 @@
               <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
                 取消
               </button>
-              <button type="button" class="btn btn-primary">
+              <button type="button" class="btn btn-primary" @click="cudRouter">
                 確認
               </button>
             </div>
@@ -185,7 +185,7 @@
               <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
                 取消
               </button>
-              <button type="button" class="btn btn-danger">
+              <button type="button" class="btn btn-danger" @click="deleteItem">
                 確認刪除
               </button>
             </div>
